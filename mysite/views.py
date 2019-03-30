@@ -8,9 +8,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 
 
-from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm
+from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm,ContactForm,MyUserForm
 
-from mysite.models import developer,user,project,bug,post,company
+from mysite.models import developer,user,project,bug,post,company,contact
 
 # Create your views here.
 
@@ -134,29 +134,30 @@ def project_listings(request,companyId):
 
 
 def profile_fill(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('mysite:401'))
+
+    userVar = User.objects.get(id=request.user.id)
+    userVar.is_staff = True
+    userVar.save()
     if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
         form = DeveloperForm(request.POST,request.FILES)
-
         # Check if the form is valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
             developerVar = form.save(commit=False)
-
             developerVar.auth_id = request.user.id
             developerVar.username = request.user.username
+            developerVar.email = request.user.email
             developerVar.save()
             #form.save()
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('mysite:showProfile',kwargs={'profileId':request.user.id}))
-
     # If this is a GET (or any other method) create the default form.
     else:
         form = DeveloperForm()
-
-
-
     return render(request, 'mysite/developers.html', {'form':form})
 
 
@@ -164,7 +165,11 @@ def show_profile(request,profileId):
     try:
         devProfile = developer.objects.get(auth_id=profileId)
     except developer.DoesNotExist:
-        return HttpResponseRedirect(reverse('mysite:401'))
+        try:
+            userProfile = user.objects.get(auth_id=profileId)
+        except user.DoesNotExist:
+            return HttpResponseRedirect(reverse('mysite:401'))
+        return render(request, 'mysite/profile.html',{'user':request.user,'developer':userProfile})    
     return render(request, 'mysite/profile.html',{'user':request.user,'developer':devProfile})
 
 
@@ -251,7 +256,19 @@ def E401(request):
     return render(request, 'mysite/401.html')
 
 def contact(request):
-    return render(request, 'mysite/contact.html')
+
+    if request.method == 'POST':
+         form  = ContactForm(request.POST)
+         if form.is_valid():
+             contactVar = form.save(commit=False)
+             contactVar.save()
+             return HttpResponseRedirect(reverse('mysite:contact'))
+
+             #return HttpResponse("Successfully saved record")
+    else:
+        form = ContactForm()
+
+    return render(request, 'mysite/contact.html',{'form':form})
 
 
 
@@ -269,13 +286,32 @@ def handler500(request, exception, template_name="500.html"):
 
 
 def profile_fill_user(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('mysite:401'))
 
+    userVar = User.objects.get(id=request.user.id)
+    userVar.is_staff = False
+    userVar.save()
 
-    return HttpResponse("User to fill profile")
+    if request.method == 'POST':
+        # Create a form instance and populate it with data from the request (binding):
+        form = MyUserForm(request.POST,request.FILES)
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            userVar = form.save(commit=False)
+            userVar.auth_id = request.user.id
+            #userVar.username = request.user.username
+            #developerVar.email = request.user.email
+            userVar.save()
+            #form.save()
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse('mysite:showProfile',kwargs={'profileId':request.user.id}))
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = DeveloperForm()
+    return render(request, 'mysite/developersUser.html', {'form':form})
 
 
 def myIssues(request,devId):
-
-
-
     return HttpResponse("MyIssues")

@@ -7,27 +7,22 @@
 
 
 <div class="container">
-  <form id="contact" action="" method="post">
+  <form id="contact" action="{%url 'mysite:contact' %}" method="post">
+    {%csrf_token%}
     <h3>Our Contact Form</h3>
     <h4>Contact us for get Your Company Registered</h4>
+
+    {% for field in form %}
     <fieldset>
-      <input placeholder="Your name" type="text" tabindex="1" required autofocus>
+      {{field.errors}}
+      <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{field.label}}</label>
+      {{field}}
+      {% if field.help_text %}
+        <p class="help">{{ field.help_text|safe }}</p>
+      {% endif %}
     </fieldset>
-    <fieldset>
-      <input placeholder="Your Email Address" type="email" tabindex="2" required>
-    </fieldset>
-    <fieldset>
-      <input placeholder="Your Phone Number (optional)" type="tel" tabindex="3" required>
-    </fieldset>
-    <fieldset>
-      <input placeholder="Your Web Site (optional)" type="url" tabindex="4" required>
-    </fieldset>
-    <fieldset>
-      <textarea placeholder="Type your message here...." tabindex="5" required></textarea>
-    </fieldset>
-    <fieldset>
-      <button name="submit" type="submit" id="contact-submit" data-submit="...Sending">Submit</button>
-    </fieldset>
+    {%endfor%}
+    <input type="submit" value="Submit">
   </form>
 </div>
 

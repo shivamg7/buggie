@@ -1,13 +1,4 @@
-
-
-{% extends 'base.html' %}
-
-{% block head %}
-  {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'mysite/styleModal.css' %}">
-
-{% endblock %}
-
+{%extends 'base.html'%}
 {% block body %}
         <div class="container">
 
@@ -17,9 +8,9 @@
 
             <div class="card">
                   <img class="rounded-circle account-img" src="{{ developer.image.url }}" alt="Image" width='300px'>
-                  <h1>{{developer.first_name}} {{developer.last_name}} </h1>
+                  <h1>{{developer.first_name}} {{developer.last_name}} {{developer.name}}</h1>
 
-                  <p class="title">{{ developer.get_profile_display }}</p>
+                  <p class="title">{{ developer.get_profile_display }} </p>
                   <p>{{ developer.company }}</p>
                   <!--<a href="#"><i class="fa fa-dribbble"></i></a>
                   <a href="#"><i class="fa fa-twitter"></i></a>
@@ -27,7 +18,7 @@
                   <a href="#"><i class="fa fa-facebook"></i></a>-->
                   <p><button class="profileContactButton" id='btnContact'>Contact</button></p>
           </div>
-        
+
         </div>
 
         <div id="myModal" class="modal">
