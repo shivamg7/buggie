@@ -119,7 +119,7 @@ def projectListings(request):
 
     projects = project.objects.all()
     companies  = company.objects.all()
-    #print(companies)
+    #print("here the COmp",companies)
     noIssueProject = {}
     nameProject = {}
     for projectVar in projects:
@@ -243,9 +243,13 @@ def projectDisplay(request,projectId):
 def issueDisplay(request,projectId,bugId):
     projectVar = project.objects.get(project_id=projectId)
     issueVar = bug.objects.get(bug_id=bugId)
+    devVar = issueVar.bugAssociation
     postVar = post.objects.filter(bug__bug_id=bugId)
     companyId = project.objects.values_list('company',flat=True).filter(project_id=projectId)
     companyVar = company.objects.get(companyId=companyId[0])
+
+    print("Created by : ",devVar)
+    print("username : ",devVar.username)
 
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -263,7 +267,7 @@ def issueDisplay(request,projectId,bugId):
     else:
             form = PostForm()
     #return HttpResponse(bugId)
-    return render(request, 'mysite/issue.html', {'form':form, 'company':companyVar, 'project':projectVar, 'issue':issueVar, 'posts':postVar})
+    return render(request, 'mysite/issue.html', {'form':form, 'company':companyVar, 'project':projectVar, 'issue':issueVar, 'posts':postVar,'postedBy':devVar})
 
 
 

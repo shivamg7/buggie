@@ -9,6 +9,13 @@
       <span class='author'> {{company.companyName}} </span> <span class="path-divider">/</span> <span class='name'> {{project.project_name}} </span>
     </h3>
     <hr>
+
+    <div class="created-by" style="float:inherit">
+      <span>Posted By : </span>
+      <img class="rounded-circle account-img" src="{{ postedBy.image.url }}" alt="Image" width='30px' >
+      <a href="{% url 'mysite:showProfile' postedBy.auth_id %}">{{postedBy.username}}</a>
+    </div>
+    <hr>
     <div class='bug-title'>
         <span> {{ issue.bug_title }} </span>
     </div>
@@ -21,7 +28,8 @@
     <ul>
     {% for post in posts %}
 
-    <div class="card-post">
+    <div class="card-post" style="width:100%">
+
         <div class="card-header-post">
             <img class="rounded-circle account-img" src="{{ post.user.image.url }}" alt="Image" width='30px' >
           <a href="{% url 'mysite:showProfile' post.user.auth_id %}">  {{post.user.username}} </span> </a>
@@ -43,13 +51,15 @@
     <form class="form-horizontal" action="{% url 'mysite:issueDisplay' project.project_id issue.bug_id %}" method="post" >
                 {% csrf_token %}
                 {% for field in form %}
-                <div class="form-group">
-                  <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">field.label</label>
+                <div class="form-group" style="padding-bottom:14px">
+                  <label for="{{ field.id_for_label }}" class="col-sm-2 control-label">{{field.label}}</label>
                   <div class="col-sm-10">
                     {{ field }}
                   </div>
                 </div>
                 {%endfor%}
+
+               <button type="submit" class="btn btn-primary mb-2" style="width:200px">Post</button>
             </form>
 
   </div>
