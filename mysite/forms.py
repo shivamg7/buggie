@@ -35,4 +35,4 @@ class ContactForm(forms.ModelForm):
 class MyUserForm(forms.ModelForm):
     class Meta:
         model = user
-        fields = ('name','phone','image')
+        fields = ('name','email','phone','image')
