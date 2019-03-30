@@ -21,9 +21,14 @@ def index(request):
         try:
             devProfile = developer.objects.get(auth_id=request.user.id)
         except developer.DoesNotExist:
-            return render(request, 'mysite/index.html', {'user':request.user, 'profileFilledAck':request.user})
+            try:
+                userProfile = user.objects.get(auth_id=request.user.id)
+            except user.DoesNotExist:
+                return render(request, 'mysite/index.html', {'user':request.user})
 
-        return render(request, 'mysite/index.html', {'user':request.user})
+        return render(request, 'mysite/index.html', {'user':request.user, 'profileFilledAck':request.user})
+
+
     else:
         return render(request, 'mysite/index.html')
 
@@ -52,7 +57,10 @@ def login_(request):
     user = authenticate(request, username=username,password=password)
     if user is not None:
         login(request, user)
-        return render(request,'mysite/profileSelection.html',{'user':user})
+        if not testProfile(user.id):
+            return render(request,'mysite/profileSelection.html',{'user':user})
+        else:
+            return HttpResponseRedirect(reverse('mysite:index'))
     else:
         error_message = "Wrong Credentials"
         return render(request, 'mysite/login.html', {'error_message':error_message})
@@ -137,6 +145,13 @@ def profile_fill(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
 
+    print(request.user.username," Is user staff ",request.user.is_staff)
+    if not request.user.is_staff:
+        return HttpResponseRedirect(reverse('mysite:profileUser'))
+
+    if testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
+
     userVar = User.objects.get(id=request.user.id)
     userVar.is_staff = True
     userVar.save()
@@ -169,7 +184,7 @@ def show_profile(request,profileId):
             userProfile = user.objects.get(auth_id=profileId)
         except user.DoesNotExist:
             return HttpResponseRedirect(reverse('mysite:401'))
-        return render(request, 'mysite/profile.html',{'user':request.user,'developer':userProfile})    
+        return render(request, 'mysite/profile.html',{'user':request.user,'developer':userProfile})
     return render(request, 'mysite/profile.html',{'user':request.user,'developer':devProfile})
 
 
@@ -289,6 +304,9 @@ def profile_fill_user(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
 
+    if testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
+
     userVar = User.objects.get(id=request.user.id)
     userVar.is_staff = False
     userVar.save()
@@ -309,9 +327,21 @@ def profile_fill_user(request):
             return HttpResponseRedirect(reverse('mysite:showProfile',kwargs={'profileId':request.user.id}))
     # If this is a GET (or any other method) create the default form.
     else:
-        form = DeveloperForm()
+        form = MyUserForm()
     return render(request, 'mysite/developersUser.html', {'form':form})
 
 
 def myIssues(request,devId):
     return HttpResponse("MyIssues")
+
+
+def testProfile(id):
+    try:
+        devProfile = developer.objects.get(auth_id=id)
+    except developer.DoesNotExist:
+        try:
+            userProfile = user.objects.get(auth_id=id)
+        except user.DoesNotExist:
+            return False
+
+    return True

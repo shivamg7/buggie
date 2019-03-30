@@ -67,12 +67,12 @@ class developer(models.Model):
 
 
 class user(models.Model):
-    user_id = models.AutoField(primary_key=True)
+    
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=30,validators=[EmailValidator])
     phone = models.BigIntegerField(validators=[MinValueValidator(8000000000),MaxValueValidator(9999999999)])
-    rating = models.DecimalField(max_digits=5, decimal_places=2, default="")
-    auth_id = models.IntegerField()
+    #rating = models.DecimalField(max_digits=5, decimal_places=2, default="")
+    auth_id = models.IntegerField(primary_key=True)
     image = models.ImageField(upload_to='profile_image', blank=True)
 
     def __str__(self):
