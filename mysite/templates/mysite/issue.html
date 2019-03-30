@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+  <div class='container'>
+
+    <h3 class='public'>
+      <svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
+      <span class='author'> {{company.companyName}} </span> <span class="path-divider">/</span> <span class='name'> {{project.project_name}} </span>
+    </h3>
+    <hr>
+    <div class='bug-title'>
+        <span> {{ issue.bug_title }} </span>
+    </div>
+
+    <div class='bug-desc'>
+      <span> {{ issue.bugDescription }} </span>
+    </div>
+
+
+    <ul>
+    {% for post in posts %}
+
+    <div class="card-post">
+        <div class="card-header-post">
+            <img class="rounded-circle account-img" src="{{ post.user.image.url }}" alt="Image" width='30px' >
+          <a href="{% url 'mysite:showProfile' post.user.auth_id %}">  {{post.user.username}} </span> </a>
+        </div>
+        <div class="card-body-post">
+          <h4 class="card-title-post" sytle="color:red;">{{post.postTitle}}</h5>
+          <hr>
+          <p class="card-text-post">{{post.content}}</p>
+          <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+        </div>
+    </div>
+
+    {% endfor  %}
+  </ul>
+
+
+  <div class='form'>
+
+    <form class="form-horizontal" action="{% url 'mysite:issueDisplay' project.project_id issue.bug_id %}" method="post" >
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.postTitle.id_for_label }}" class="col-sm-2 control-label">Post Title</label>
+                    <div class="col-sm-10">
+                      {{ form.postTitle }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.content.id_for_label }}" class="col-sm-2 control-label">Content</label>
+                    <div class="col-sm-10">
+                      {{ form.content }}
+                    </div>
+                </div>
+                <div class="form-group">
+                 <div class="col-sm-offset-2 col-sm-10">
+                   <button type="submit" class="btn btn-default">Submit</button>
+                 </div>
+               </div>
+            </form>
+
+  </div>
+
+  </div>
+
+
+{% endblock %}

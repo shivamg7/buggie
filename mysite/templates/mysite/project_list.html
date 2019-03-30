@@ -1,0 +1,54 @@
+
+
+{% extends 'base.html' %}
+
+{% block body %}
+{% load mysite_extras %}
+	<div class  = 'container'>
+
+		<h2>Project Listings</h2>
+		<button class="new-project-button btn btn-default" id="new-project-button">
+			<a href="{% url 'mysite:newProject'%}">Click to add new Project</a></button>
+
+		  <br>
+
+						<div class="btn-group">
+										<button type="button" class="btn btn-info">Action</button>
+										<button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span class="sr-only">Company Filter</span>
+										</button>
+										<div class="dropdown-menu">
+
+												{% for company in companies %}
+													<a class='dropdown-item' href='{% url 'mysite:projects_filtered' company.companyId %}'>{{company.companyName}}</a>
+												{% endfor %}
+
+												<div class="dropdown-divider"></div>
+												<a class="dropdown-item" href="#">Separated link</a>
+										</div>
+							</div>
+
+		<div class='margins'>
+			<table class='table table-striped table-bordered'>
+				<tr>
+					<th>Project Name</th>
+					<th>Company</th>
+					<th>Started on</th>
+					<th>Active bugs</th>
+				</tr>
+
+				{% for project in projects %}
+
+					<tr>
+						<th> <a href="{% url 'mysite:projectDisplay' project.project_id%}">{{project.project_name}}</a> </th>
+						<th> {{project.company.companyName}} </th>
+						<th> {{project.start_date}} </th>
+						<th> {{ cardinal|hash:project.project_id }} </th>
+					</tr>
+
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+
+{% endblock %}

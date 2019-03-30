@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'mysite/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'mysite/bootstrap.min.css' %}">
+
+    {% block head %}
+
+    {% endblock %}
+    <title> {%block title%}HOME{%endblock%} </title>
+  </head>
+<body>
+
+  <div id="fb-root"></div>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v3.2"></script>
+  <img src='https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png'>
+<div class="topnav">
+      <ul>
+          <li> <a class="active" href="{% url 'mysite:index' %}">Home</a> </li>
+          <li> <a href="{% url 'mysite:contact' %}">Contact</a> </li>
+  {% if  user.is_authenticated %}
+          <li> <a href="">My issues</a> </li>
+          <li> <a href="{% url 'mysite:projects' %}">Project Listings</a> </li>
+          <li style = 'float:right'>
+
+          <a href="{% url 'mysite:logout' %}">Logout &nbsp
+          <img width="12" height="16" src="{% static 'mysite/power.svg' %}" alt="Kiwi standing on oval"> </a>
+          </li>
+          {% if user %}
+              <li style = "float:right">
+               <a href="{% url 'mysite:showProfile' user.id %}">Welcome  <strong> {{ user.username }} </strong></a>
+              </li>
+          {% endif %}
+
+ {% endif %}
+</div>
+
+<div class="fb-comments" data-href="https://developers.facebook.com/docs/plugins/comments#configurator" data-numposts="5"></div>
+
+{% block body %}
+
+
+{% endblock %}
+</body>
+</html>

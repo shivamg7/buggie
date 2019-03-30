@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block body %}
+          <div class="container">
+
+
+          {% if error_message %}
+            {% for error_msg in error_message %}
+              <p><strong> {{ error_message }} </strong></p>
+            {% endfor%}
+          {% endif %}
+
+
+
+
+                  <div class ="form">
+
+                  <p><strong> Fill this form to register</strong></p>
+                  <form action="{% url 'mysite:register' %}" name="registeration" method="post">
+
+                    {% csrf_token %}
+                          <label>username</label>
+                           <br>
+                          <input type="text" name="username" for="username">
+                          <br>
+
+                          <label>Email</label>
+                           <br>
+                          <input type="text" name="email" for="email">
+                          <br>
+
+                          <label>Password</label>
+                           <br>
+                          <input type="password" name="password_1" for="password">
+                          <br>
+
+                          <label>Confirm Password</label>
+                           <br>
+                          <input type="password" name="password_2" for="confirm password">
+                          <br>
+                          <br>
+                          <button type="submit" name="register">Register Now </button>
+
+                  </form>
+
+                  </div>
+          </div>
+{% endblock %}

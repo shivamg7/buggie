@@ -1,0 +1,67 @@
+
+
+{% extends 'base.html' %}
+
+{% block head %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'mysite/styleModal.css' %}">
+
+{% endblock %}
+
+{% block body %}
+        <div class="container">
+
+
+         {% if error_message %} <p><strong> {{ error_message }} </strong></p>{% endif %}
+
+
+            <div class="card">
+                  <img class="rounded-circle account-img" src="{{ developer.image.url }}" alt="Image" width='300px'>
+                  <h1>{{developer.first_name}} {{developer.last_name}} </h1>
+
+                  <p class="title">{{ developer.get_profile_display }}</p>
+                  <p>{{ developer.company }}</p>
+                  <!--<a href="#"><i class="fa fa-dribbble"></i></a>
+                  <a href="#"><i class="fa fa-twitter"></i></a>
+                  <a href="#"><i class="fa fa-linkedin"></i></a>
+                  <a href="#"><i class="fa fa-facebook"></i></a>-->
+                  <p><button class="profileContactButton" id='btnContact'>Contact</button></p>
+          </div>
+        
+        </div>
+
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <p>{{ developer.email }}</p>
+            </div>
+        </div>
+
+        <script>
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("btnContact");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function() {
+        modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+        }
+</script>
+{% endblock %}

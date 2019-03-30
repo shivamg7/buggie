@@ -1,0 +1,174 @@
+li a {
+  color: green;
+}
+
+.container {
+        content-align:center;
+        text-align : center;
+        color: black;
+        font-family: courier;
+          font-size: 130%;
+          margin: 25px 50px 75px 100px;
+       }
+
+
+.form {
+        margin : 20px;
+        padding : 20px;
+        text-align : center;
+       }
+
+
+
+body {
+        background-color: white;
+
+       }
+
+
+
+.button {
+  background-color: #95fff3;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  text-align : center;
+  position: absolute;
+    top: 50%;
+}
+
+.rounded-circle{
+  border-radius: 50%;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 32%;
+    margin: auto;
+    text-align: center;
+    padding: 10px;
+}
+
+.title {
+  color: grey;
+  font-size: 18px;
+}
+
+.profileContactButton{
+
+
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+
+
+}
+
+.h2 {
+
+
+    font-family: 'Montserrat', sans-serif;
+
+    font-family: 'Roboto', sans-serif;
+
+
+}
+
+
+.topnav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #20B2AA;
+}
+
+.topnav li {
+  float: left;
+}
+
+.topnav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.topnav li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #48D1CC;
+}
+.container {
+  margin : auto;
+	width: 742px;
+}
+
+.container-index {
+  margin : auto;
+	width: 742px;
+  padding: 15px;
+}
+.container ul a {
+
+	color: #00CED1;
+}
+
+.list-group-item {
+  text-align: left;
+}
+
+.error-page-wrap{
+  margin: 0 auto;
+  width: 100%;
+  text-align: center;
+}
+
+.card-post {
+    box-shadow: 4px 8px 26px 3px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+    margin: 10px;
+    text-align: left;
+    padding: 10px;
+}
+
+.userDescription {
+  font-size: 50%;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+.bd-example > .btn-group {
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+}
+.btn-group, .btn-group-vertical {
+    position: relative;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    vertical-align: middle;
+}
+
+.dropdown-toggle-split {
+    padding-right: .5625rem;
+    padding-left: .5625rem;
+}
