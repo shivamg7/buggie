@@ -5,7 +5,7 @@
 
           {% if error_message %}
             {% for error_msg in error_message %}
-              <p><strong> {{ error_message }} </strong></p>
+              <p><strong> {{ error_msg }} </strong></p>
             {% endfor%}
           {% endif %}
 
@@ -24,11 +24,21 @@
                           <br>
 
                           <label>Email</label>
+                          {%if emailError%}
+                          <div class="alert alert-danger" role="alert" style="width: 40%;margin: auto;padding: 20px;">
+                              {{emailError}}
+                          </div>
+                          {%endif%}
                            <br>
                           <input type="text" name="email" for="email">
                           <br>
 
                           <label>Password</label>
+                          {%if passwordError%}
+                          <div class="alert alert-danger" role="alert" style="width: 40%;margin: auto;padding: 20px;">
+                          {{passwordError}}
+                          </div>
+                          {%endif%}
                            <br>
                           <input type="password" name="password_1" for="password">
                           <br>

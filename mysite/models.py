@@ -44,6 +44,7 @@ class developer(models.Model):
 	('SY'  , 'Software Analyst'),
 	('BA'  , 'Business analyst'),
 	('TS'  , 'Technical support'),
+    ('US'  , 'User'),
     )
 
     PROFILE_AUTH_OPTIONS =  (
@@ -67,7 +68,7 @@ class developer(models.Model):
 
 
 class user(models.Model):
-    
+
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=30,validators=[EmailValidator])
     phone = models.BigIntegerField(validators=[MinValueValidator(8000000000),MaxValueValidator(9999999999)])

@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url, include, re_path
 from django.contrib import admin
 from django.urls import path
 from django.http import HttpResponse
@@ -30,5 +30,5 @@ urlpatterns = [
     path('myIssues/<int:devId>/',views.myIssues,name='myIssue'),
     path('401/',views.E401,name='401'),
     path('contact/',views.contact,name='contact'),
-    path('*/',views.E401),
+    re_path(r'^.*$',views.E404),
 ]

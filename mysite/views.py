@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.core.validators import MinValueValidator, MaxValueValidator, EmailValidator, ValidationError
 
 
 from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm,ContactForm,MyUserForm
@@ -87,18 +88,22 @@ def register(request):
 
     if len(errors)==0:
         if password!=confirm_password:
-            errors.append("Passwords do not match.")
-            registered = 'False'
+            return render(request, 'registration/register.html', {'passwordError':'Passwords dont match'})
         else:
+            validateEmail = EmailValidator()
+            try:
+                validateEmail(email)
+            except ValidationError:
+                return render(request, 'registration/register.html', {'emailError':'Invalid Email'})
             registered = register_user(username,email,password)
             #try to register user
+
 
 
 
     if len(errors)==0 and registered=='success':
             return HttpResponseRedirect(reverse('mysite:login'))
     else:
-        errors.append(registered)
         return render(request, 'registration/register.html', {'error_message':errors})
 
 
@@ -292,7 +297,7 @@ def contact(request):
 
 
 
-def handler404(request, exception, template_name="404.html"):
+def E404(request):
     response = render_to_response("404.html")
     response.status_code = 404
     return response
@@ -326,6 +331,9 @@ def profile_fill_user(request):
             #userVar.username = request.user.username
             #developerVar.email = request.user.email
             userVar.save()
+
+            developerVar = developer(first_name=userVar.name,last_name="",company=company.objects.get(companyName="Buggie"),profile="US",auth_id=userVar.auth_id,email=userVar.email,username=userVar.name,image=userVar.image,profileAuth="U")
+            developerVar.save()
             #form.save()
             # redirect to a new URL:
             return HttpResponseRedirect(reverse('mysite:showProfile',kwargs={'profileId':request.user.id}))
