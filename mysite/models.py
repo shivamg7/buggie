@@ -92,6 +92,7 @@ class bug(models.Model):
     )
     bug_status = models.CharField(max_length=1,choices=BUG_STATUS)
     bugAssociation = models.ForeignKey(developer,on_delete=models.CASCADE)
+    postedOn = models.DateTimeField(default=datetime.datetime.now)
     #userAssociation = models.ForeignKey(developer,on_delete = models.CASCADE)
     def __str__(self):
         return self.bug_title

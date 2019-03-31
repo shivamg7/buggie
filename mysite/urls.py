@@ -30,5 +30,5 @@ urlpatterns = [
     path('myIssues/<int:devId>/',views.myIssues,name='myIssue'),
     path('401/',views.E401,name='401'),
     path('contact/',views.contact,name='contact'),
-    re_path(r'^.*$',views.E404),
+    #re_path(r'^.*$',views.E404),
 ]

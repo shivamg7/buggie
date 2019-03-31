@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.validators import MinValueValidator, MaxValueValidator, EmailValidator, ValidationError
-
+import smtplib
 
 from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm,ContactForm,MyUserForm
 
@@ -150,16 +150,17 @@ def profile_fill(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
 
-    print(request.user.username," Is user staff ",request.user.is_staff)
-    if not request.user.is_staff:
-        return HttpResponseRedirect(reverse('mysite:profileUser'))
+    builtuserVar = User.objects.get(username=request.user.username)
+    builtuserVar.is_staff = True
+    builtuserVar.save()
+    #print(request.user.username," Is user staff ",request.user.is_staff)
+    #if not request.user.is_staff:
+    #    return HttpResponseRedirect(reverse('mysite:profileUser'))
 
     if testProfile(request.user.id):
         return HttpResponseRedirect(reverse('mysite:index'))
 
-    userVar = User.objects.get(id=request.user.id)
-    userVar.is_staff = True
-    userVar.save()
+
     if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
@@ -310,15 +311,18 @@ def handler500(request, exception, template_name="500.html"):
 
 
 def profile_fill_user(request):
+
+
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
+
+    if request.user.is_staff:
+        return HttpResponseRedirect(reverse('mysite:profile'))
 
     if testProfile(request.user.id):
         return HttpResponseRedirect(reverse('mysite:index'))
 
-    userVar = User.objects.get(id=request.user.id)
-    userVar.is_staff = False
-    userVar.save()
+    
 
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request (binding):
@@ -344,7 +348,11 @@ def profile_fill_user(request):
 
 
 def myIssues(request,devId):
-    return HttpResponse("MyIssues")
+
+    issuesVar = bug.objects.filter(bugAssociation__auth_id=devId)
+    developerVar = developer.objects.get(auth_id=devId)
+    return render(request, 'mysite/myissues.html',{'issues':issuesVar,'developer':developerVar})
+
 
 
 def testProfile(id):
@@ -357,3 +365,11 @@ def testProfile(id):
             return False
 
     return True
+
+
+def sendEmails(recepients,message):
+    server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    server.login("rvceise16@gmail.com", "1rv16isxxx")
+    for recepient in recepients:
+        server.sendmail("rvceise16@gmail.com", recepient, message)
+    server.quit()

@@ -1,0 +1,38 @@
+{%extends 'base.html'%}
+
+{%block body%}
+
+  <div class="container" style="padding-top:20px">
+
+    <div class="alert alert-info" role="alert">
+      Issues posted by You  @<a href="{%url 'mysite:showProfile' developer.auth_id %}">{{developer.username}}</a> &nbsp <img class="rounded-circle account-img" src="{{developer.image.url}}" width=20px>
+    </div>
+    
+
+
+      		<div class='margins' style="padding:40px">
+      			<table class='table table-striped table-bordered'>
+      				<tr>
+      					<th>Issue Title</th>
+      					<th>Project</th>
+      					<th>Company</th>
+      					<th>Posted On</th>
+      				</tr>
+
+      				{% for issue in issues %}
+
+      					<tr>
+      						<th> <a href="{% url 'mysite:issueDisplay' issue.project.project_id issue.bug_id %}"> {{ issue.bug_title }} </a> </th>
+      						<th> {{issue.project.project_name}} </th>
+      						<th> {{issue.project.company.companyName}} </th>
+      						<th> {{ issue.postedOn }} </th>
+      					</tr>
+
+      				{% endfor %}
+      			</table>
+      		</div>
+
+
+  </div>
+
+{%endblock%}
