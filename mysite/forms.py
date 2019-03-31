@@ -12,8 +12,8 @@ class DeveloperForm(forms.ModelForm):
 class ProjectForm(forms.Form):
 
     project_name = forms.CharField()
-    start_date = forms.DateField(widget=widgets.SelectDateWidget(years=[y for y in range(1990,2019)]))
-
+    start_date = forms.DateField(widget=widgets.SelectDateWidget(years=[y for y in range(1960,2020)]))
+    projectDescription = forms.TextField()
 
 
 class BugForm(forms.ModelForm):

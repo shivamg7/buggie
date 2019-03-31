@@ -17,14 +17,14 @@ class project(models.Model):
 
     def validateDate(date):
         if datetime.date.today() < date:
-            raise ValidationError("Date is in the past")
+            raise ValidationError("Date is in the future")
 
     project_name = models.CharField(max_length=200)
-    projectDescription = models.TextField(default="Lorem Ipsum")
+    projectDescription = models.TextField()
     project_id = models.AutoField(primary_key=True)
     start_date = models.DateField(default=datetime.date.today,validators=[validateDate])
     #end_date = models.DateField()
-    company = models.ForeignKey(company, on_delete=models.DO_NOTHING, default=None)
+    company = models.ForeignKey(company, on_delete=models.CASCADE, default=None)
 
 
     def __str__(self):
@@ -71,7 +71,7 @@ class user(models.Model):
 
     name = models.CharField(max_length=30)
     email = models.CharField(max_length=30,validators=[EmailValidator])
-    phone = models.BigIntegerField(validators=[MinValueValidator(8000000000),MaxValueValidator(9999999999)])
+    phone = models.BigIntegerField(validators=[MinValueValidator(7000000000),MaxValueValidator(9999999999)])
     #rating = models.DecimalField(max_digits=5, decimal_places=2, default="")
     auth_id = models.IntegerField(primary_key=True)
     image = models.ImageField(upload_to='profile_image', blank=True)
@@ -113,7 +113,7 @@ class post(models.Model):
 class contact(models.Model):
     name = models.CharField(max_length=20)
     email = models.CharField(max_length=30,validators=[EmailValidator(message="Enter Valid email", code=None, whitelist=None)])
-    phone = models.BigIntegerField(validators=[MinValueValidator(8000000000),MaxValueValidator(9999999999)])
+    phone = models.BigIntegerField(validators=[MinValueValidator(700000000),MaxValueValidator(9999999999)])
     message = models.TextField()
 
     def __str__(self):
