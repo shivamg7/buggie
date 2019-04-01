@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+{%block head%}
 
+{%endblock%}
 {% block body %}
 
   <div class='container'>
@@ -40,6 +42,12 @@
           <p class="card-text-post">{{post.content}}</p>
           <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
         </div>
+        {%load static%}
+          <a href="{%url 'mysite:castVote' post.postId post.user.auth_id 1%}"><img src="{%static 'mysite/icon-like.png'%}" width=20px></a>
+          <span class='count-like'>{{post.upvotes}}</span>
+          <a href="{%url 'mysite:castVote' post.postId post.user.auth_id 2%}"><img src="{%static 'mysite/icon-dislike.png'%}" width=20px></a>
+          <span class='count-dislike'>{{post.downvotes}}</span>
+
     </div>
 
     {% endfor  %}
@@ -58,7 +66,6 @@
                   </div>
                 </div>
                 {%endfor%}
-
                <button type="submit" class="btn btn-primary mb-2" style="width:200px">Post</button>
             </form>
 

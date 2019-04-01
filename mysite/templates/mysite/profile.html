@@ -11,7 +11,7 @@
                   <h1>{{developer.first_name}} {{developer.last_name}} {{developer.name}}</h1>
 
                   <p class="title">{{ developer.get_profile_display }} </p>
-                  <p>{{ developer.company }}</p>
+                  <p><img src="{{developer.company.companyLogo.url}}" width="40px">&nbsp{{ developer.company }}</p>
                   <!--<a href="#"><i class="fa fa-dribbble"></i></a>
                   <a href="#"><i class="fa fa-twitter"></i></a>
                   <a href="#"><i class="fa fa-linkedin"></i></a>

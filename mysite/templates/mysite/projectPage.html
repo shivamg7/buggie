@@ -1,17 +1,29 @@
 {% extends 'base.html' %}
 
+{%block head%}
+<style>
+.list-group li.live-bug{
+  background-color:red;
+}
+</style>
+{%endblock%}
 {% block body %}
 
-<div class='container'>
+<div class='container' style="padding:10px">
 
-  <h3 class='public'>
-    <svg class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="12" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
-    <span class='author'> {{company.companyName}} </span> <span class="path-divider">/</span> <span class='name'> {{project.project_name}} </span>
-  </h3>
-  <hr>
+  <div class="jumbotron" style="padding:20px">
+    <h2 class='public'>
+      <img src="{{project.company.companyLogo.url}}" width=30px>
+      <span class='author'> {{project.company.companyName}} </span> <span class="path-divider">/</span> <span class='name'> {{project.project_name}} </span>
+    </h2>
+    <hr class="my-4">
+  <p class="lead" style="text-align: justify;
+  text-justify: inter-word;">{{ project.projectDescription }}</p>
 
-  <div class='project-description'>
-    {{ project.projectDescription }}
+
+  <!--<p class="lead">
+    <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+  </p>-->
   </div>
   <hr>
 
@@ -19,7 +31,7 @@
 
 
   <div class='form'>
-    <form class="form-horizontal" action="{% url 'mysite:projectDisplay' project.project_id %}" method="post" >
+    <form class="form-horizontal" action="{% url 'mysite:projectDisplay' project.project_id %}" method="post" style="padding:5px" >
                 {% csrf_token %}
                 {% for field in form %}
                 <div class="form-group">
@@ -29,25 +41,33 @@
                   </div>
                 </div>
                 {%endfor%}
-<input type="submit" value="Submit">
+
+                  <br><input type="submit" value="Submit">
             </form>
   </div>
 
 
   <span class='project-info'>Number of active issues : {{ numberOfIssues }} </span>
-  <div class='project-issues '>
-    <ul class='list-group'>
-      {% if issues %}
-        {% for issue in issues %}
-          <li  class="list-group-item"><a href="{% url 'mysite:issueDisplay' project.project_id issue.bug_id %}"> {{ issue.bug_title }} </a></li>
-        {% endfor %}
-      {% endif %}
+  <div class='project-issues' styel="padding:10px">
+    <table class='table table-striped table-bordered'>
+      <tr>
+        <th>Bug</th>
+        <th>Posted By</th>
+        <th>Posteed on</th>
+        <th>Status</th>
+      </tr>
+      {% for issue in issues %}
+      <tr>
+        <th><a href="{% url 'mysite:issueDisplay' project.project_id issue.bug_id %}"> {{ issue.bug_title }} </a></th>
+        <th><a href="{% url 'mysite:showProfile' issue.bugAssociation.auth_id %}">{{issue.bugAssociation.username}}</a></th>
+        <th>{{issue.postedOn}}</th>
+        <th {% if issue.bug_status == 'L' %}
+              style="background-color:red"
+              {%endif%}>{{issue.bug_status}}</th>
+      </tr>
+      {%endfor%}
+    </table>
+  </div>
 
-    <ul>
-
-  <div>
-
-
-</div>
 
 {% endblock %}
