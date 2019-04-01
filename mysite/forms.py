@@ -9,11 +9,18 @@ class DeveloperForm(forms.ModelForm):
         fields = ('first_name', 'last_name', 'company', 'profile','image', )
 
 
-class ProjectForm(forms.Form):
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = project
+        fields = ('project_name','projectDescription','start_date')
+        widgets = {
+                'start_date':widgets.SelectDateWidget(years=[y for y in range(1960,2020)]),
+                'projectDescription': forms.Textarea(
+                               attrs={'rows': 10,
+                                      'cols': 40,
+                                      'style': 'height: 7em;'}),
+        }
 
-    project_name = forms.CharField()
-    start_date = forms.DateField(widget=widgets.SelectDateWidget(years=[y for y in range(1960,2020)]))
-    projectDescription = forms.TextField()
 
 
 class BugForm(forms.ModelForm):

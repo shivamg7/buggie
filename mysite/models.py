@@ -57,6 +57,7 @@ class developer(models.Model):
     company = models.ForeignKey(company, on_delete=models.CASCADE)
     profile  = models.CharField(max_length=2,choices=PROFILE_CHOICES)
     #dev_id = models.IntegerField()
+    rating = models.FloatField(default=2.5)
     auth_id = models.IntegerField(primary_key=True)
     email = models.CharField(max_length=30)
     username = models.CharField(max_length=20)

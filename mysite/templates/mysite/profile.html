@@ -12,16 +12,17 @@
 
                   <p class="title">{{ developer.get_profile_display }} </p>
                   <p><img src="{{developer.company.companyLogo.url}}" width="40px">&nbsp{{ developer.company }}</p>
-                  <!--<a href="#"><i class="fa fa-dribbble"></i></a>
-                  <a href="#"><i class="fa fa-twitter"></i></a>
-                  <a href="#"><i class="fa fa-linkedin"></i></a>
-                  <a href="#"><i class="fa fa-facebook"></i></a>-->
                   <p><button class="profileContactButton" id='btnContact'>Contact</button></p>
+                  <p style="text-align:center">Rating</p>
+                  <div class="progress">
+                    {%load mysite_extras%}
+                      <div class="progress-bar" role="progressbar" style="width:{{developer.rating|mul}}%;" aria-valuenow="" aria-valuemin="0" aria-valuemax="5">{{developer.rating}}</div>
+                  </div>
           </div>
 
         </div>
 
-        <div id="myModal" class="modal">
+        <div id="myModal" class="modal" style="margin: 400px;padding: 20px;font-size: 20px;">
             <!-- Modal content -->
             <div class="modal-content">
               <span class="close">&times;</span>

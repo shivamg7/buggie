@@ -18,8 +18,9 @@
       					<th>Company</th>
       					<th>Posted On</th>
                 <th>Status</th>
+                <th>Toggle Status</th>
       				</tr>
-
+              {%load static%}
       				{% for issue in issues %}
 
       					<tr>
@@ -29,7 +30,11 @@
       						<th> {{ issue.postedOn }} </th>
                   <th {% if issue.bug_status == 'L' %}
                         style="background-color:red"
-                        {%endif%}>{{issue.bug_status}}</th>
+                        {%endif%}
+                        {% if issue.bug_status == 'R' %}
+                              style="background-color:#008B8B"
+                              {%endif%}>{{issue.bug_status}}</th>
+                  <th style="text-align:center"><a href="{%url 'mysite:resolveIssue' issue.bug_id%}"><img src="{%static 'mysite/check-mark.png'%}"width=40px></a></th>
       					</tr>
 
       				{% endfor %}

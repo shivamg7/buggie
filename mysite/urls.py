@@ -28,8 +28,10 @@ urlpatterns = [
     path('projectDisplay/<int:projectId>/',views.projectDisplay,name='projectDisplay'),
     path('issueDisplay/<int:projectId>/<int:bugId>/',views.issueDisplay,name='issueDisplay'),
     path('myIssues/<int:devId>/',views.myIssues,name='myIssue'),
+    path('resolveissue/<int:bugId>/',views.resolveIssue,name='resolveIssue'),
     path('vote/<int:postId>/<int:userId>/<int:voteType>/', views.castVote, name='castVote'),
     path('401/',views.E401,name='401'),
+    path('404/',views.E404,name='404'),
     path('contact/',views.contact,name='contact'),
-    #re_path(r'^.*$',views.E404),
+    re_path(r'^.*$',views.E404),
 ]

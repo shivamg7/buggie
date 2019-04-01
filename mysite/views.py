@@ -185,11 +185,16 @@ def profile_fill(request):
 def show_profile(request,profileId):
     try:
         devProfile = developer.objects.get(auth_id=profileId)
+        devProfile.rating = calcRating(profileId)
+        devProfile.save()
     except developer.DoesNotExist:
         try:
             userProfile = user.objects.get(auth_id=profileId)
+            userProfile.rating = calcRating(profileId)
+            userProfile.save()
         except user.DoesNotExist:
-            return HttpResponseRedirect(reverse('mysite:401'))
+            print("User Not Found")
+            return HttpResponseRedirect(reverse('mysite:404'))
         return render(request, 'mysite/profile.html',{'user':request.user,'developer':userProfile})
     return render(request, 'mysite/profile.html',{'user':request.user,'developer':devProfile})
 
@@ -259,6 +264,8 @@ def issueDisplay(request,projectId,bugId):
     print("username : ",devVar.username)
 
     if request.method == 'POST':
+        if issueVar.bug_status == 'R':
+            return HttpResponseRedirect(reverse('mysite:issueDisplay', kwargs={'projectId':projectVar.project_id, 'bugId':issueVar.bug_id}))
         form = PostForm(request.POST)
         if form.is_valid():
             postTitle = form.cleaned_data['postTitle']
@@ -302,7 +309,7 @@ def contact(request):
 def E404(request):
     response = render_to_response("404.html")
     response.status_code = 404
-    return response
+    return render(request,'404.html')
 
 
 def handler500(request, exception, template_name="500.html"):
@@ -376,7 +383,9 @@ def castVote(request, postId, userId, voteType):
         voteVar = 'D'
 
     try:
-        vote.objects.get(postA=postVar,userA=userVar,voteType=voteVar)
+        myvoteVar = vote.objects.get(postA=postVar,userA=userVar,voteType=voteVar)
+        #print(myvoteVar)
+        #print("Vote Already Exists")
         return HttpResponseRedirect(reverse('mysite:issueDisplay',kwargs={'projectId':postVar.bug.project.project_id,'bugId':postVar.bug.bug_id}))
     except vote.DoesNotExist:
         if(voteType==1):
@@ -399,3 +408,47 @@ def sendEmails(recepients,message):
     for recepient in recepients:
         server.sendmail("rvceise16@gmail.com", recepient, message)
     server.quit()
+
+
+def resolveIssue(request, bugId):
+
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('mysite:401'))
+
+    bugVar = bug.objects.get(bug_id=bugId)
+    userVar = developer.objects.get(auth_id=request.user.id)
+
+
+    print(bugVar," being deleted by ",userVar)
+    if not userVar.auth_id == bugVar.bugAssociation.auth_id:
+        return HttpResponseRedirect(reverse('mysite:401'))
+
+    if bugVar.bug_status == 'R':
+        bugVar.bug_status = 'L'
+    elif bugVar.bug_status == 'L':
+        bugVar.bug_status = 'R'
+
+    bugVar.save()
+
+    return HttpResponseRedirect(reverse('mysite:myIssue',kwargs={'devId':request.user.id}))
+
+
+def calcRating(devId):
+    try:
+        userVar = developer.objects.get(auth_id=devId)
+    except developer.DoesNotExist:
+        return HttpResponseRedirect(reverse('mysite:404'))
+
+
+    postVar = post.objects.filter(user=userVar)
+
+    upvotes = 0
+    downvotes = 0
+    for myPost in postVar:
+        upvotes += myPost.upvotes
+        downvotes += myPost.downvotes
+
+    if (upvotes+downvotes) == 0:
+        upvotes = 1
+
+    return 5*(upvotes/(downvotes+upvotes))
