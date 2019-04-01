@@ -118,3 +118,16 @@ class contact(models.Model):
 
     def __str__(self):
         return self.name
+
+class vote(models.Model):
+    VOTE_CHOICES = (
+        ('U','Upvote'),
+        ('D','Downvote')
+    )
+    postA = models.ForeignKey(post,on_delete=models.CASCADE)
+    userA = models.ForeignKey(developer,on_delete=models.CASCADE)
+    voteType = models.CharField(max_length=1,choices=VOTE_CHOICES)
+    id = models.AutoField(primary_key=True)
+
+    def __str__(self):
+        return str(self.userA.username) + " FOR " + str(self.postA) + " TYPE " + str(self.voteType)

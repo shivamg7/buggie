@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import developer,project,bug,post,company,contact,user
+from .models import developer,project,bug,post,company,contact,user,vote
 from django.contrib.auth.models import User
 
 @admin.register(developer)
@@ -33,4 +33,8 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(contact)
 class contactAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(vote)
+class voteAdmin(admin.ModelAdmin):
     pass

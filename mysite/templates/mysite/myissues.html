@@ -7,7 +7,7 @@
     <div class="alert alert-info" role="alert">
       Issues posted by You  @<a href="{%url 'mysite:showProfile' developer.auth_id %}">{{developer.username}}</a> &nbsp <img class="rounded-circle account-img" src="{{developer.image.url}}" width=20px>
     </div>
-    
+
 
 
       		<div class='margins' style="padding:40px">
@@ -17,6 +17,7 @@
       					<th>Project</th>
       					<th>Company</th>
       					<th>Posted On</th>
+                <th>Status</th>
       				</tr>
 
       				{% for issue in issues %}
@@ -26,6 +27,9 @@
       						<th> {{issue.project.project_name}} </th>
       						<th> {{issue.project.company.companyName}} </th>
       						<th> {{ issue.postedOn }} </th>
+                  <th {% if issue.bug_status == 'L' %}
+                        style="background-color:red"
+                        {%endif%}>{{issue.bug_status}}</th>
       					</tr>
 
       				{% endfor %}

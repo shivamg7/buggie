@@ -20,12 +20,24 @@ class BugForm(forms.ModelForm):
     class Meta:
         model = bug
         fields = ('bug_title', 'bugDescription' )
+        widgets = {
+            'bugDescription': forms.Textarea(
+                           attrs={'rows': 10,
+                                  'cols': 40,
+                                  'style': 'height: 7em;'}),
+        }
 
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = post
         fields = ('postTitle', 'content')
+        widgets = {
+            'content': forms.Textarea(
+                           attrs={'rows': 10,
+                                  'cols': 40,
+                                  'style': 'height: 7em;'}),
+        }
 
 class ContactForm(forms.ModelForm):
     class Meta:

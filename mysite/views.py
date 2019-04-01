@@ -11,7 +11,7 @@ import smtplib
 
 from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm,ContactForm,MyUserForm
 
-from mysite.models import developer,user,project,bug,post,company,contact
+from mysite.models import developer,user,project,bug,post,company,contact,vote
 
 # Create your views here.
 
@@ -128,7 +128,7 @@ def projectListings(request):
     noIssueProject = {}
     nameProject = {}
     for projectVar in projects:
-        noIssueProject[projectVar.project_id] = len(bug.objects.filter(project=projectVar))
+        noIssueProject[projectVar.project_id] = len(bug.objects.filter(project=projectVar,bug_status='L'))
         nameProject[projectVar.project_id] = projectVar.project_name
 
     return render(request, 'mysite/project_list.html', {'projects':projects,'cardinal': noIssueProject, 'companies':companies })
@@ -226,6 +226,7 @@ def projectDisplay(request,projectId):
 
     projectVar = project.objects.get(project_id=projectId)
     issuesVar = bug.objects.filter(project__project_id=projectId)
+    liveIssuesVar = bug.objects.filter(project__project_id=projectId,bug_status='L')
 
     if request.method == 'POST':
         form = BugForm(request.POST)
@@ -243,7 +244,7 @@ def projectDisplay(request,projectId):
     else:
         form = BugForm()
 
-    return render( request, 'mysite/projectPage.html', {'form':form, 'project':projectVar, 'issues':issuesVar,'numberOfIssues':len(issuesVar)})
+    return render( request, 'mysite/projectPage.html', {'form':form, 'project':projectVar, 'issues':issuesVar,'numberOfIssues':len(liveIssuesVar)})
 
 
 def issueDisplay(request,projectId,bugId):
@@ -322,7 +323,7 @@ def profile_fill_user(request):
     if testProfile(request.user.id):
         return HttpResponseRedirect(reverse('mysite:index'))
 
-    
+
 
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request (binding):
@@ -366,6 +367,31 @@ def testProfile(id):
 
     return True
 
+def castVote(request, postId, userId, voteType):
+    postVar = post.objects.get(postId=postId)
+    userVar = developer.objects.get(auth_id=userId)
+    if voteType == 1:
+        voteVar = 'U'
+    else:
+        voteVar = 'D'
+
+    try:
+        vote.objects.get(postA=postVar,userA=userVar,voteType=voteVar)
+        return HttpResponseRedirect(reverse('mysite:issueDisplay',kwargs={'projectId':postVar.bug.project.project_id,'bugId':postVar.bug.bug_id}))
+    except vote.DoesNotExist:
+        if(voteType==1):
+            postVar.upvotes += 1
+        else:
+            postVar.downvotes +=1
+
+        postVar.save()
+        voteVar = vote(postA=postVar, userA=userVar, voteType=voteVar)
+        voteVar.save()
+        return HttpResponseRedirect(reverse('mysite:issueDisplay',kwargs={'projectId':postVar.bug.project.project_id,'bugId':postVar.bug.bug_id}))
+
+
+
+    return HttpResponse("success")
 
 def sendEmails(recepients,message):
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)

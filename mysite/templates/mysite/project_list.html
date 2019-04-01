@@ -44,7 +44,7 @@
 
 					<tr>
 						<th> <a href="{% url 'mysite:projectDisplay' project.project_id%}">{{project.project_name}}</a> </th>
-						<th> {{project.company.companyName}} </th>
+						<th><img src="{{project.company.companyLogo.url}}" width="20px"> {{project.company.companyName}} </th>
 						<th> {{project.start_date}} </th>
 						<th> {{ cardinal|hash:project.project_id }} </th>
 					</tr>
