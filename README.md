@@ -11,12 +11,15 @@ The app is an implementation of an Issue Tracking System.
 # Requirements
  
   * Django 2.1.7 (Higher version maybe supported)
-  To install latest version of Django:
+To install latest version of Django:
+
     pip install Django
     
  * Pillow (python image library)
- To install Pillow using pip:
-  pip install Pillow
+To install Pillow using pip:
+ 
+    pip install Pillow
  
 To run the project on localhost:
-  python manage.py runserver
+  
+    python manage.py runserver
