@@ -14,6 +14,7 @@
                   <p class="title">{{ developer.get_profile_display }} </p>
                   <p><img src="{{developer.company.companyLogo.url}}" width="40px">&nbsp{{ developer.company }}</p>
                   <p><button class="profileContactButton" id='btnContact'>Contact</button></p>
+                  <p><a href="{% url 'mysite:myIssue' developer.auth_id%}">Issues</a></p>
                   <p style="text-align:center">Rating</p>
                   <div class="progress">
                     {%load mysite_extras%}

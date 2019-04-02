@@ -7,7 +7,8 @@ from django.urls import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.validators import MinValueValidator, MaxValueValidator, EmailValidator, ValidationError
-import smtplib
+from django.views.decorators.cache import never_cache
+import smtplib, re
 
 from mysite.forms import DeveloperForm,ProjectForm,BugForm,PostForm,ContactForm,MyUserForm
 
@@ -15,6 +16,8 @@ from mysite.models import developer,user,project,bug,post,company,contact,vote
 
 # Create your views here.
 
+
+@never_cache
 def index(request):
     if request.user.is_authenticated:
         userId = User.objects.get(id=request.user.id)
@@ -26,35 +29,30 @@ def index(request):
                 userProfile = user.objects.get(auth_id=request.user.id)
             except user.DoesNotExist:
                 return render(request, 'mysite/index.html', {'user':request.user})
-
         return render(request, 'mysite/index.html', {'user':request.user, 'profileFilledAck':request.user})
-
-
     else:
         return render(request, 'mysite/index.html')
 
+@never_cache
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse('mysite:index'))
 
-
+@never_cache
 def login_(request):
 
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:index'))
-
     try:
         log_in = request.POST['login']
     except MultiValueDictKeyError:
         return render(request, 'mysite/login.html')
-
     try:
         username = request.POST['username']
         password = request.POST['password']
     except MultiValueDictKeyError:
         error_message = "Missing Credentials"
         return render(request, 'mysite/login.html', {'error_message':error_message})
-
     user = authenticate(request, username=username,password=password)
     if user is not None:
         login(request, user)
@@ -68,7 +66,7 @@ def login_(request):
 
 
 
-
+@never_cache
 def register(request):
 
     errors = []
@@ -93,6 +91,7 @@ def register(request):
             validateEmail = EmailValidator()
             try:
                 validateEmail(email)
+                validate_myEmail(email)
             except ValidationError:
                 return render(request, 'registration/register.html', {'emailError':'Invalid Email'})
             registered = register_user(username,email,password)
@@ -120,6 +119,7 @@ def register_user(usr,mail,passcode):
 
     return "Username is already registered"
 
+@never_cache
 def projectListings(request):
 
     projects = project.objects.all()
@@ -133,6 +133,7 @@ def projectListings(request):
 
     return render(request, 'mysite/project_list.html', {'projects':projects,'cardinal': noIssueProject, 'companies':companies })
 
+@never_cache
 def project_listings(request,companyId):
 
     companies  = company.objects.all()
@@ -145,10 +146,10 @@ def project_listings(request,companyId):
 
     return render(request, 'mysite/project_list.html', {'projects':projects,'cardinal': noIssueProject, 'companies':companies })
 
-
+@never_cache
 def profile_fill(request):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('mysite:401'))
+        return HttpResponseRedirect(reverse('mysite:profile'))
 
     builtuserVar = User.objects.get(username=request.user.username)
     builtuserVar.is_staff = True
@@ -156,10 +157,6 @@ def profile_fill(request):
     #print(request.user.username," Is user staff ",request.user.is_staff)
     #if not request.user.is_staff:
     #    return HttpResponseRedirect(reverse('mysite:profileUser'))
-
-    if testProfile(request.user.id):
-        return HttpResponseRedirect(reverse('mysite:index'))
-
 
     if request.method == 'POST':
 
@@ -181,8 +178,11 @@ def profile_fill(request):
         form = DeveloperForm()
     return render(request, 'mysite/developers.html', {'form':form})
 
-
+@never_cache
 def show_profile(request,profileId):
+    if not testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:404'))
+
     try:
         devProfile = developer.objects.get(auth_id=profileId)
         devProfile.rating = calcRating(profileId)
@@ -198,8 +198,11 @@ def show_profile(request,profileId):
         return render(request, 'mysite/profile.html',{'user':request.user,'developer':userProfile})
     return render(request, 'mysite/profile.html',{'user':request.user,'developer':devProfile})
 
-
+@never_cache
 def newProjectLandingPage(request):
+
+    if not testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
 
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
@@ -227,7 +230,11 @@ def newProjectLandingPage(request):
 
 
 # Individual Projects page to see issues already registered and also a form to create a new Issue
+@never_cache
 def projectDisplay(request,projectId):
+
+    if not testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
 
     projectVar = project.objects.get(project_id=projectId)
     issuesVar = bug.objects.filter(project__project_id=projectId)
@@ -251,8 +258,12 @@ def projectDisplay(request,projectId):
 
     return render( request, 'mysite/projectPage.html', {'form':form, 'project':projectVar, 'issues':issuesVar,'numberOfIssues':len(liveIssuesVar)})
 
-
+@never_cache
 def issueDisplay(request,projectId,bugId):
+
+    if not testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
+
     projectVar = project.objects.get(project_id=projectId)
     issueVar = bug.objects.get(bug_id=bugId)
     devVar = issueVar.bugAssociation
@@ -284,10 +295,11 @@ def issueDisplay(request,projectId,bugId):
     return render(request, 'mysite/issue.html', {'form':form, 'company':companyVar, 'project':projectVar, 'issue':issueVar, 'posts':postVar,'postedBy':devVar})
 
 
-
+@never_cache
 def E401(request):
     return render(request, 'mysite/401.html')
 
+@never_cache
 def contact(request):
 
     if request.method == 'POST':
@@ -305,19 +317,19 @@ def contact(request):
 
 
 
-
+@never_cache
 def E404(request):
     response = render_to_response("404.html")
     response.status_code = 404
     return render(request,'404.html')
 
-
+@never_cache
 def handler500(request, exception, template_name="500.html"):
     response = render_to_response("500.html")
     response.status_code = 500
     return response
 
-
+@never_cache
 def profile_fill_user(request):
 
 
@@ -327,7 +339,7 @@ def profile_fill_user(request):
     if request.user.is_staff:
         return HttpResponseRedirect(reverse('mysite:profile'))
 
-    if testProfile(request.user.id):
+    if not testProfile(request.user.id):
         return HttpResponseRedirect(reverse('mysite:index'))
 
 
@@ -354,8 +366,10 @@ def profile_fill_user(request):
         form = MyUserForm()
     return render(request, 'mysite/developersUser.html', {'form':form})
 
-
+@never_cache
 def myIssues(request,devId):
+    if not testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:profile'))
 
     issuesVar = bug.objects.filter(bugAssociation__auth_id=devId)
     developerVar = developer.objects.get(auth_id=devId)
@@ -374,7 +388,9 @@ def testProfile(id):
 
     return True
 
+@never_cache
 def castVote(request, postId, userId, voteType):
+
     postVar = post.objects.get(postId=postId)
     userVar = developer.objects.get(auth_id=userId)
     if voteType == 1:
@@ -402,6 +418,7 @@ def castVote(request, postId, userId, voteType):
 
     return HttpResponse("success")
 
+@never_cache
 def sendEmails(recepients,message):
     server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
     server.login("rvceise16@gmail.com", "1rv16isxxx")
@@ -410,10 +427,12 @@ def sendEmails(recepients,message):
     server.quit()
 
 
+@never_cache
 def resolveIssue(request, bugId):
 
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
+
 
     bugVar = bug.objects.get(bug_id=bugId)
     userVar = developer.objects.get(auth_id=request.user.id)
