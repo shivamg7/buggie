@@ -9,8 +9,13 @@
 
 
       <div class = "container-index container">
-
-        <h2> BUGGIE </h2>
+        {%load static%}
+        <div class="jumbotron jumbotron-fluid" style="background-image:url({% static 'mysite/buggie.png'%});height:400px">
+            <div class="container">
+          <h1 class="display-4" style='text-align:left'>BUGGIE</h1>
+              <p class="lead" style='text-align:left'>This is a Issue Tracking system.</p>
+          </div>
+        </div>
         {% if not user.is_authenticated %}
         <a href="{% url 'mysite:login' %}"><button class='btn btn-default'>Click here to Login</button></a> {{ profileFilledAck }}
         {% endif %}

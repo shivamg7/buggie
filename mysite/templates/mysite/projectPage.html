@@ -63,7 +63,10 @@
         <th>{{issue.postedOn}}</th>
         <th {% if issue.bug_status == 'L' %}
               style="background-color:red"
-              {%endif%}>{{issue.bug_status}}</th>
+              {%endif%}
+              {% if issue.bug_status == 'R' %}
+                    style="background-color:#008B8B"
+                    {%endif%}>{{issue.bug_status}}</th>
       </tr>
       {%endfor%}
     </table>
