@@ -323,11 +323,6 @@ def E404(request):
     response.status_code = 404
     return render(request,'404.html')
 
-@never_cache
-def handler500(request, exception, template_name="500.html"):
-    response = render_to_response("500.html")
-    response.status_code = 500
-    return response
 
 @never_cache
 def profile_fill_user(request):
