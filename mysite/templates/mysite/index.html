@@ -18,14 +18,15 @@
         </div>
         {% if not user.is_authenticated %}
         <a href="{% url 'mysite:login' %}"><button class='btn btn-default'>Click here to Login</button></a> {{ profileFilledAck }}
+        <a href="{% url 'mysite:register' %}"><button class='btn btn-default'>Click here to Register</button></a><br>
         {% endif %}
         {% if user.is_authenticated %}
         {% if not profileFilledAck %}
           <span class = 'profileFilledAck'>You have not filled your Profile details</span>
-          <a href="{% url 'mysite:profile' %}"><button class='btn btn-default'>Click here to Fill your profile</button></a><br>
+          <a href="{% url 'mysite:profileSelection' %}"><button class='btn btn-default'>Click here to Fill your profile</button></a><br>
         {% endif %}
         {% endif %}
-        <a href="{% url 'mysite:register' %}"><button class='btn btn-default'>Click here to Register</button></a><br>
+
         <!--  <a href="{% url 'mysite:logout' %}">Click here to Logout</a>-->
 
 

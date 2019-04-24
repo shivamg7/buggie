@@ -57,7 +57,7 @@ def login_(request):
     if user is not None:
         login(request, user)
         if not testProfile(user.id):
-            return render(request,'mysite/profileSelection.html',{'user':user})
+            return HttpResponseRedirect(reverse('mysite:profileSelection'))
         else:
             return HttpResponseRedirect(reverse('mysite:index'))
     else:
@@ -91,7 +91,7 @@ def register(request):
             validateEmail = EmailValidator()
             try:
                 validateEmail(email)
-                validate_myEmail(email)
+                #validate_myEmail(email)
             except ValidationError:
                 return render(request, 'registration/register.html', {'emailError':'Invalid Email'})
             registered = register_user(username,email,password)
@@ -147,9 +147,20 @@ def project_listings(request,companyId):
     return render(request, 'mysite/project_list.html', {'projects':projects,'cardinal': noIssueProject, 'companies':companies })
 
 @never_cache
+def profile_selection(request):
+    if testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
+        
+    return render(request,'mysite/profileSelection.html',{'user':user})
+
+
+@never_cache
 def profile_fill(request):
+
     if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('mysite:profile'))
+        return HttpResponseRedirect(reverse('mysite:index'))
+    if testProfile(request.user.id):
+        return HttpResponseRedirect(reverse('mysite:index'))
 
     builtuserVar = User.objects.get(username=request.user.username)
     builtuserVar.is_staff = True
@@ -331,13 +342,14 @@ def profile_fill_user(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('mysite:401'))
 
-    if request.user.is_staff:
-        return HttpResponseRedirect(reverse('mysite:profile'))
 
-    if not testProfile(request.user.id):
+    if testProfile(request.user.id):
         return HttpResponseRedirect(reverse('mysite:index'))
 
-
+    print("User Set to user")
+    builtuserVar = User.objects.get(username=request.user.username)
+    builtuserVar.is_staff = False
+    builtuserVar.save()
 
     if request.method == 'POST':
         # Create a form instance and populate it with data from the request (binding):
@@ -373,6 +385,7 @@ def myIssues(request,devId):
 
 
 def testProfile(id):
+    # False when profile is not filled
     try:
         devProfile = developer.objects.get(auth_id=id)
     except developer.DoesNotExist:

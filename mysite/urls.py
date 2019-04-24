@@ -23,6 +23,7 @@ urlpatterns = [
     path('projectsFiltered/<int:companyId>',views.project_listings,name='projects_filtered'),
     path('profile/',views.profile_fill,name='profile'),
     path('profileUser/',views.profile_fill_user,name='profileUser'),
+    path('profileSelection/',views.profile_selection,name='profileSelection'),
     path('showprofile/<int:profileId>',views.show_profile,name='showProfile'),
     path('newProject/',views.newProjectLandingPage,name='newProject'),
     path('projectDisplay/<int:projectId>/',views.projectDisplay,name='projectDisplay'),
