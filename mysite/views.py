@@ -461,10 +461,7 @@ def resolveIssue(request, bugId):
 
 
 def calcRating(devId):
-    try:
-        userVar = developer.objects.get(auth_id=devId)
-    except developer.DoesNotExist:
-        return HttpResponseRedirect(reverse('mysite:404'))
+    return 2.5
 
 
     postVar = post.objects.filter(user=userVar)

@@ -76,6 +76,7 @@ class user(models.Model):
     #rating = models.DecimalField(max_digits=5, decimal_places=2, default="")
     auth_id = models.IntegerField(primary_key=True)
     image = models.ImageField(upload_to='profile_image', default='profile_image/person.png')
+    rating = models.FloatField(default=2.5)
 
     def __str__(self):
         return self.name
