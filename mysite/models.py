@@ -7,7 +7,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator, EmailVa
 class company(models.Model):
     companyName = models.CharField(max_length=50)
     companyId = models.AutoField(primary_key=True)
-    companyLogo = models.ImageField(upload_to='company_logo', blank=True)
+    companyLogo = models.ImageField(upload_to='company_logo', default='company_logo/buggie.png')
 
     def __str__(self):
         return self.companyName
@@ -36,7 +36,7 @@ class project(models.Model):
 class developer(models.Model):
 
     PROFILE_CHOICES = (
-        ('SSE' , 'Senior Software Engineer'),
+        ('SS' , 'Senior Software Engineer'),
         ('ST'  , 'Software Tester'),
         ('SA'  , 'Software Architect'),
         ('SE'  , 'Software Engineer'),
@@ -61,7 +61,7 @@ class developer(models.Model):
     auth_id = models.IntegerField(primary_key=True)
     email = models.CharField(max_length=30)
     username = models.CharField(max_length=20)
-    image = models.ImageField(upload_to='profile_image', blank=True)
+    image = models.ImageField(upload_to='profile_image', default='profile_image/person.png')
     profileAuth = models.CharField(max_length=1,choices=PROFILE_AUTH_OPTIONS)
     def __str__(self):
         return self.first_name
@@ -75,7 +75,7 @@ class user(models.Model):
     phone = models.BigIntegerField(validators=[MinValueValidator(7000000000),MaxValueValidator(9999999999)])
     #rating = models.DecimalField(max_digits=5, decimal_places=2, default="")
     auth_id = models.IntegerField(primary_key=True)
-    image = models.ImageField(upload_to='profile_image', blank=True)
+    image = models.ImageField(upload_to='profile_image', default='profile_image/person.png')
 
     def __str__(self):
         return self.name
